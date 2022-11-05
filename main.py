@@ -1,23 +1,15 @@
-from kt_classes import *
+from trainer import *
 from console import Console
+from random import choice
 
-class ClassicBook(Book):
-    def get_info():
-        return {"name": "classic", "damage": 1, "affect_chance": 0 }
+def digitsRule():
+    return CharSequence([choice("1") for x in range(25)])
 
-class Fox(Enemy):
-    def get_info():
-        return {"name": "Fox", "hp": 100, "time_limit": -1 }
+trainer = Trainer(digitsRule)
+Console.clear()
+Console.print(trainer.sequence.get_text(), end="\r")
 
-game = Game(ClassicBook, Fox)
+while(True):
+    trainer.try_to_cover_char(Console.getch())
+    Console.print(trainer.sequence.get_text(), "|", trainer.typing_speed, "chars/min", "|", "mistakes[", trainer.mistakes, "]", end="\r")
 
-while(game.hp > 0):
-    Console.print("\r", game.enemy.get_info()["name"], "[ ", game.hp, " / ", game.max_hp, " ]:", sep="", end="")
-    Console.print(game.sequence.get_text())
-    char = Console.getch()
-    if game.enemy.get_info()["time_limit"] > 0 and time() - game.time > game.enemy.get_info()["time_limit"]:
-        game.enemy.AI(game, AI_TIME_IS_OVER)
-    elif game.sequence.is_correct(char):
-        game.enemy.AI(game, AI_HIT)
-    else:
-        game.enemy.AI(game, AI_MISS)
