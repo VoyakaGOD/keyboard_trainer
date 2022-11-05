@@ -1,11 +1,10 @@
 from trainer import *
 from console import Console
-from random import choice
+from rules import rules
+from menu import Menu
 
-def digitsRule():
-    return CharSequence([choice("1") for x in range(25)])
-
-trainer = Trainer(digitsRule)
+menu = Menu(rules)
+trainer = Trainer(menu.select())
 Console.clear()
 Console.print(trainer.sequence.get_text(), end="\r")
 
