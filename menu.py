@@ -27,6 +27,6 @@ class Menu:
                 self._index = (self._index + 1) % len(self._items)
             elif char == " ":
                 return self._items[list(self._items.keys())[self._index]]
-            elif ord(char) == 27:
+            elif Console.is_esc(char):
                 return None
     

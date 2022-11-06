@@ -4,16 +4,16 @@ from rules import rules
 from menu import Menu
 
 menu = Menu(rules)
-while(True):
+while True:
     rule = menu.select()
     if rule is None:
         break
     trainer = Trainer(rule)
     Console.clear()
-    while(True):
+    while True:
         Console.print(trainer.get_str_repr(), "     ", end="\r")
         key = Console.getch()
-        if ord(key) == 27:
+        if Console.is_esc(key):
             break
         is_sequence_over = trainer.try_to_cover_char(key)
         if is_sequence_over:
