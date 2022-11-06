@@ -27,9 +27,16 @@ class Trainer:
     def try_to_cover_char(self, char):
         if not self._sequence.is_correct(char):
             self._mistakes += 1
-            return
+            return False
         self._sequence.cover("#")
         if self._sequence.is_over():
-            self._time = time()
-            self._sequence = self._rule()
-            self._mistakes = 0
+            return True
+        return False
+
+    def reset(self):
+        self._time = time()
+        self._sequence = self._rule()
+        self._mistakes = 0
+
+    def get_str_repr(self):
+        return self._sequence.get_text() + " | " + str(self.typing_speed) + " chars/min | mistakes[ " + str(self._mistakes) + " ]"

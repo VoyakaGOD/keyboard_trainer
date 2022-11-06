@@ -4,11 +4,19 @@ from rules import rules
 from menu import Menu
 
 menu = Menu(rules)
-trainer = Trainer(menu.select())
-Console.clear()
-Console.print(trainer.sequence.get_text(), end="\r")
-
 while(True):
-    trainer.try_to_cover_char(Console.getch())
-    Console.print(trainer.sequence.get_text(), "|", trainer.typing_speed, "chars/min", "|", "mistakes[", trainer.mistakes, "]", end="\r")
-
+    rule = menu.select()
+    if rule is None:
+        break
+    trainer = Trainer(rule)
+    Console.clear()
+    while(True):
+        Console.print(trainer.get_str_repr(), "     ", end="\r")
+        key = Console.getch()
+        if ord(key) == 27:
+            break
+        is_sequence_over = trainer.try_to_cover_char(key)
+        if is_sequence_over:
+            Console.print(trainer.get_str_repr(), "     ")
+            trainer.reset()
+Console.print("Thanks for playing!")

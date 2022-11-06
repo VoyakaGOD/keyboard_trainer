@@ -18,7 +18,7 @@ class Menu:
     def select(self):
         while(True):
             Console.clear()
-            Console.print("w - upper, s - lower, space - select")
+            Console.print("w - up, s - down, space - select, esc - exit")
             self.draw()
             char = Console.getch()
             if char == "w":
@@ -27,4 +27,6 @@ class Menu:
                 self._index = (self._index + 1) % len(self._items)
             elif char == " ":
                 return self._items[list(self._items.keys())[self._index]]
+            elif ord(char) == 27:
+                return None
     
