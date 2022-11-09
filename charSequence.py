@@ -1,5 +1,5 @@
 class CharSequence:
-    def __init__(self, chars : list):
+    def __init__(self, chars : list | str):
         if type(chars) == str:
             chars = list(chars)
         if type(chars) is not list:
