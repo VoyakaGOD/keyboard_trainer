@@ -8,6 +8,9 @@ class Console:
     def is_esc(char):
         return ord(char) == 27
 
+    def is_backspace(char):
+        return char == '\b'
+
 if platform == "win32":
     from msvcrt import getwch
     Console.getch = getwch

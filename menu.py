@@ -21,11 +21,11 @@ class Menu:
             Console.print("w - up, s - down, space - select, esc - exit")
             self.draw()
             char = Console.getch()
-            if char == "w":
+            if char == 'w':
                 self._index = (len(self._items) + self._index - 1) % len(self._items)
-            elif char == "s":
+            elif char == 's':
                 self._index = (self._index + 1) % len(self._items)
-            elif char == " ":
+            elif char == ' ':
                 return self._items[list(self._items.keys())[self._index]]
             elif Console.is_esc(char):
                 return None

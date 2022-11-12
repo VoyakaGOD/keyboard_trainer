@@ -1,6 +1,7 @@
 from time import time
 from typing import Callable
 from charSequence import CharSequence
+from console import Console
 
 class Trainer:
     def __init__(self, rule : Callable[[], CharSequence]):
@@ -24,14 +25,16 @@ class Trainer:
         except:
             return 0
 
-    def try_to_cover_char(self, char):
-        if not self._sequence.is_correct(char):
+    def enter_char(self, char):
+        if not self._sequence.enter(char):
             self._mistakes += 1
             return False
-        self._sequence.cover("#")
         if self._sequence.is_over():
             return True
         return False
+
+    def remove_char(self):
+        self._sequence.remove_last()
 
     def reset(self):
         self._time = time()
@@ -39,4 +42,26 @@ class Trainer:
         self._mistakes = 0
 
     def get_str_repr(self):
-        return self._sequence.get_text() + " | " + str(self.typing_speed) + " chars/min | mistakes[ " + str(self._mistakes) + " ]"
+        return self._sequence.get_colored_text() + " | " + str(self.typing_speed) + " chars/min | mistakes[ " + str(self._mistakes) + " ]"
+
+    def run(self):
+        is_sequence_over = False
+        while True:
+            Console.print(self.get_str_repr(), "     ", end="\r")
+            key = Console.getch()
+            if key == '\n' or key == '\r':
+                continue
+            if key == '\t':
+                self.enter_char(' ')
+                self.enter_char(' ')
+                self.enter_char(' ')
+                is_sequence_over = self.enter_char(' ')
+            elif Console.is_esc(key):
+                break
+            elif Console.is_backspace(key):
+                self.remove_char()
+            else:
+                is_sequence_over = self.enter_char(key)
+            if is_sequence_over:
+                Console.print(self.get_str_repr(), "     ")
+                self.reset()
