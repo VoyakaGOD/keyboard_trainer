@@ -1,6 +1,7 @@
 GOOD_SEQUENCE_COLOR = '\033[92m'
 BAD_SEQUENCE_COLOR = '\033[91m'
 NORMAL_SEQUENCE_COLOR = '\33[0m'
+SPACE_REPLACEMENT = '▫'
 
 class CharSequence:
     def __init__(self, target : list[str] | str):
@@ -19,7 +20,7 @@ class CharSequence:
     def get_colored_text(self):
         text = []
         text += GOOD_SEQUENCE_COLOR
-        text += self._target[:self._index]
+        text += self._current[:self._index]
         text += BAD_SEQUENCE_COLOR
         text += self._current[self._index:]
         text += NORMAL_SEQUENCE_COLOR
@@ -37,7 +38,7 @@ class CharSequence:
             return True
         if len(self._current) >= len(self._target):
             return False
-        self._current.append(char)
+        self._current.append(char if char != ' ' else SPACE_REPLACEMENT)
         if len(self._current) - 1 == self._index and self._target[self._index] == char:
             self._index += 1
             return True
