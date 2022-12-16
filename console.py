@@ -8,13 +8,11 @@ class Console:
     def is_esc(char):
         return ord(char) == 27
 
-    def is_backspace(char):
-        return char == '\b'
-
 if platform == "win32":
     from msvcrt import getwch
     Console.getch = getwch
     Console.clear = lambda: system("cls")
+    Console.is_backspace = lambda char: char == '\b'
 else:
     import sys, tty, termios
     def unix_getch():
@@ -23,8 +21,11 @@ else:
         try:
             tty.setraw(sys.stdin.fileno())
             ch = sys.stdin.read(1)
+            if ord(ch) == 27:
+                ch = sys.stdin.read(1)
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
     Console.getch = unix_getch
     Console.clear = lambda: system("clear")
+    Console.is_backspace = lambda char: ord(char) == 127
