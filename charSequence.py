@@ -1,7 +1,6 @@
 GOOD_SEQUENCE_COLOR = '\033[92m'
 BAD_SEQUENCE_COLOR = '\033[91m'
 NORMAL_SEQUENCE_COLOR = '\33[0m'
-WRONG_SEQUENCE_LIMIT = 20
 
 class CharSequence:
     def __init__(self, target : list[str] | str):
@@ -10,7 +9,7 @@ class CharSequence:
         if type(target) is not str:
             raise TypeError
         self._target = target
-        self._wrong = []
+        self._current = []
         self._index = 0
 
     @property
@@ -18,9 +17,14 @@ class CharSequence:
         return self._index
     
     def get_colored_text(self):
-        return "".join([GOOD_SEQUENCE_COLOR, self._target[:self._index], 
-        BAD_SEQUENCE_COLOR, "".join(self._wrong), 
-        NORMAL_SEQUENCE_COLOR, self._target[(self._index + len(self._wrong)):]])
+        text = []
+        text += GOOD_SEQUENCE_COLOR
+        text += self._target[:self._index]
+        text += BAD_SEQUENCE_COLOR
+        text += self._current[self._index:]
+        text += NORMAL_SEQUENCE_COLOR
+        text += self._target[len(self._current):]
+        return "".join(text)
 
     def get_len(self):
         return len(self._target)
@@ -31,18 +35,19 @@ class CharSequence:
     def enter(self, char : str):
         if self.is_over():
             return True
-        if self._target[self._index] == char and len(self._wrong) == 0:
+        if len(self._current) >= len(self._target):
+            return False
+        self._current.append(char)
+        if len(self._current) - 1 == self._index and self._target[self._index] == char:
             self._index += 1
             return True
-        else:
-            if len(self._wrong) < WRONG_SEQUENCE_LIMIT:
-                self._wrong += [char if char != ' ' else '_']
-            return False
+        return False
+        
 
     def remove_last(self):
-        if len(self._wrong) > 0:
-            self._wrong.pop()
-        elif self._index > 0:
-            self._index -= 1
+        if len(self._current) > 0:
+            self._current.pop()
+        elif self._index > len(self._current):
+            self._index = len(self._current)
         return True
         
